@@ -1,3 +1,6 @@
+## 0.7.2 04/28/2017
+* Updated silence API usage
+
 ## 0.7.1 06/23/2015
 * Rainbow compatability
 

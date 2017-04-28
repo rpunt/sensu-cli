@@ -55,16 +55,24 @@ module SensuCli
     end
 
     def silence(cli)
-      content = { :timestamp => Time.now.to_i }
-      content.merge!(:owner => cli[:fields][:owner]) if cli[:fields][:owner]
-      content.merge!(:reason => cli[:fields][:reason]) if cli[:fields][:reason]
-      payload = { :content =>  content }
+      # content = { :timestamp => Time.now.to_i }
+      # content.merge!(:owner => cli[:fields][:owner]) if cli[:fields][:owner]
+      # content.merge!(:reason => cli[:fields][:reason]) if cli[:fields][:reason]
+      # payload = { :content =>  content }
+      # silence_path = 'silence'
+      # silence_path << "/#{cli[:fields][:client]}" if cli[:fields][:client]
+      # silence_path << "/#{cli[:fields][:check]}" if cli[:fields][:check]
+      # payload = payload.merge!(:path => silence_path).to_json
+      payload = { :subscription => cli[:fields][:client] }
       payload.merge!(:expire => cli[:fields][:expire].to_i) if cli[:fields][:expire]
-      silence_path = 'silence'
-      silence_path << "/#{cli[:fields][:client]}" if cli[:fields][:client]
-      silence_path << "/#{cli[:fields][:check]}" if cli[:fields][:check]
-      payload = payload.merge!(:path => silence_path).to_json
-      respond('/stashes', payload)
+      if cli[:fields][:reason]
+        reason = cli[:fields][:reason]
+      else
+        reason = "Silenced via API - no reason given"
+      end
+      payload.merge!(:reason => reason)
+      payload.merge!(:creator => `whoami`).to_json
+      respond('/silenced', payload.to_json)
     end
 
     def aggregates(cli)
