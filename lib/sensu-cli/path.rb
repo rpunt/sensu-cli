@@ -63,7 +63,7 @@ module SensuCli
         reason = "Silenced via API - no reason given"
       end
       payload.merge!(:reason => reason)
-      payload.merge!(:creator => `whoami`).to_json
+      payload.merge!(:creator => `whoami`)
       respond('/silenced', payload.to_json)
     end
 
